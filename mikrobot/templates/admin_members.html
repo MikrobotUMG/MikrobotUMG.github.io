@@ -1,0 +1,64 @@
+{% extends "layout.html" %}
+{% block title %}Zarządzanie członkami – MIKROBOT{% endblock %}
+{% block content %}
+<div class="row mb-4">
+  <div class="col-12">
+    <h1>Zarządzanie członkami</h1>
+    <p>Dodaj nowych członków lub edytuj istniejących. Dostęp do tej sekcji wymaga zalogowania, ale poszczególne operacje nie wymagają ponownego wpisywania hasła.</p>
+    <!-- Przycisk powrotu do wyboru kategorii w panelu -->
+    <a href="{{ url_for('admin_home') }}" class="btn btn-outline-primary mt-2">Powrót do panelu</a>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-8">
+    <form method="post" enctype="multipart/form-data">
+      <!-- Formularz dodawania członka – bez pola hasła -->
+      <div class="mb-3">
+        <label for="name" class="form-label">Imię i nazwisko</label>
+        <input type="text" class="form-control" id="name" name="name" required>
+      </div>
+      <div class="mb-3">
+        <label for="role" class="form-label">Funkcja</label>
+        <input type="text" class="form-control" id="role" name="role" required>
+      </div>
+      <div class="mb-3">
+        <label for="category" class="form-label">Kategoria</label>
+        <select id="category" name="category" class="form-control" required>
+          <option value="opiekun">Opiekun</option>
+          <option value="zarząd">Zarząd</option>
+          <option value="członek">Członek</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="description" class="form-label">Opis</label>
+        <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
+      </div>
+      <div class="mb-3">
+        <label for="photo" class="form-label">Zdjęcie (opcjonalnie)</label>
+        <input type="file" class="form-control" id="photo" name="photo" accept="image/*">
+      </div>
+      <button type="submit" class="btn btn-primary">Dodaj członka</button>
+    </form>
+  </div>
+</div>
+<div class="row mt-4">
+  <div class="col-12">
+    <h2>Lista członków</h2>
+    {% if members %}
+      <ul class="list-unstyled">
+        {% for m in members %}
+        <li class="mb-3">
+          <strong>{{ m['name'] }}</strong> – {{ m['role'] }} ({{ m['category'] }})
+          <a href="{{ url_for('edit_member', member_id=m['id']) }}" class="btn btn-outline-primary" style="margin-left:0.5rem;">Edytuj</a>
+          <form action="{{ url_for('delete_member', member_id=m['id']) }}" method="post" style="display:inline;">
+            <button type="submit" class="btn btn-outline-primary" style="margin-left:0.5rem;">Usuń</button>
+          </form>
+        </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>Brak zarejestrowanych członków.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

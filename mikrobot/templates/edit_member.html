@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+{% block title %}Edytuj członka – MIKROBOT{% endblock %}
+{% block content %}
+<div class="row mb-4">
+  <div class="col-12">
+    <h1>Edytuj członka</h1>
+    <p>Zmień dane członka koła lub zaktualizuj jego zdjęcie. Po zapisaniu powrócisz do listy członków.</p>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-8">
+    <form method="post" enctype="multipart/form-data">
+      <div class="mb-3">
+        <label for="name" class="form-label">Imię i nazwisko</label>
+        <input type="text" class="form-control" id="name" name="name" value="{{ member['name'] }}" required>
+      </div>
+      <div class="mb-3">
+        <label for="role" class="form-label">Funkcja</label>
+        <input type="text" class="form-control" id="role" name="role" value="{{ member['role'] }}" required>
+      </div>
+      <div class="mb-3">
+        <label for="category" class="form-label">Kategoria</label>
+        <select id="category" name="category" class="form-control" required>
+          <option value="opiekun" {% if member['category'] == 'opiekun' %}selected{% endif %}>Opiekun</option>
+          <option value="zarząd" {% if member['category'] == 'zarząd' %}selected{% endif %}>Zarząd</option>
+          <option value="członek" {% if member['category'] == 'członek' %}selected{% endif %}>Członek</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="description" class="form-label">Opis</label>
+        <textarea class="form-control" id="description" name="description" rows="4" required>{{ member['description'] }}</textarea>
+      </div>
+      {% if member['photo'] %}
+      <div class="mb-3">
+        <p>Aktualne zdjęcie:</p>
+        <img src="{{ url_for('static', filename=member['photo']) }}" class="img-fluid mb-2" alt="Zdjęcie członka">
+      </div>
+      {% endif %}
+      <div class="mb-3">
+        <label for="photo" class="form-label">Zmień zdjęcie (opcjonalnie)</label>
+        <input type="file" class="form-control" id="photo" name="photo" accept="image/*">
+      </div>
+      <button type="submit" class="btn btn-primary">Zapisz</button>
+      <a href="{{ url_for('admin_members') }}" class="btn btn-outline-primary" style="margin-left:0.5rem;">Anuluj</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

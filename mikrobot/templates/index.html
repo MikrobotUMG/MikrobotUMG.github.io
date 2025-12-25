@@ -1,0 +1,92 @@
+{% extends "layout.html" %}
+{% block title %}Strona główna – MIKROBOT{% endblock %}
+{% block content %}
+<!-- Sekcja nagłówkowa -->
+<div class="row mb-4">
+  <div class="col-12">
+    <div class="position-relative rounded overflow-hidden">
+      <img src="{{ url_for('static', filename='images/hero.jpg') }}" class="img-fluid w-100" alt="Laboratorium mikrorobotów">
+      <div class="position-absolute top-50 start-50 translate-middle text-center text-white p-3" style="background-color: rgba(0,0,0,0.5);">
+        <h1 class="display-4 fw-bold">MIKROBOT</h1>
+        <p class="lead mb-0">Studenckie Koło Naukowe
+          <br/>Połączenie pasji, technologii i mikroświata.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Krótka informacja o kole -->
+<div class="row mb-5">
+  <div class="col-md-6">
+    <h2>Kim jesteśmy?</h2>
+    <p>
+      Koło naukowe MIKROBOT zrzesza pasjonatów mikrorobotyki, elektroniki,
+      programowania i mechaniki precyzyjnej. Naszym celem jest rozwój i
+      popularyzacja nowoczesnych technologii wśród studentów, realizacja
+      ambitnych projektów badawczo‑rozwojowych oraz udział w konkursach i
+      konferencjach. Jeśli chcesz rozwinąć skrzydła w świecie miniaturowych
+      konstrukcji i poznać ludzi o podobnych zainteresowaniach – dołącz do nas!
+    </p>
+  </div>
+  <div class="col-md-6">
+    <img src="{{ url_for('static', filename='images/team.jpg') }}" class="img-fluid rounded" alt="Zespół MIKROBOT">
+  </div>
+</div>
+
+<!-- Najnowsze aktualności -->
+<div class="row justify-content-center">
+  <div class="col-12 mb-3">
+    <h2>Aktualności</h2>
+  </div>
+  {% for item in news %}
+  <div class="col-md-4 mb-4">
+    <div class="card h-100 shadow-sm position-relative">
+      {#
+        Przygotuj listę obrazów bez użycia rozszerzenia `do`. Zaczynamy od
+        pustej listy, następnie dodajemy miniaturę (jeśli istnieje) oraz
+        wszystkie dodatkowe zdjęcia, nie przejmując się duplikatami – jeśli
+        miniatura zostanie powtórzona, JavaScript poradzi sobie z wyświetleniem
+        kilku razy tego samego pliku. Jinja2 umożliwia konkatenację list
+        za pomocą operatora +, jednak nie obsługuje metody append w szablonie.
+      #}
+      {#
+        Przygotuj łańcuch znaków zawierający wszystkie zdjęcia związane z
+        aktualnością. Najpierw dołącz miniaturę, jeśli istnieje, a następnie
+        dodaj pozostałe obrazy z tabeli news_images. Umożliwia to uniknięcie
+        problemów z zakresem zmiennych w pętli Jinja.
+      #}
+      {#
+        Jeśli w kolumnie images (z news_images) znajduje się lista zdjęć,
+        użyj jej w całości. W przeciwnym razie, jeśli brak dodatkowych
+        zdjęć, wykorzystaj miniaturę. Pozwala to uniknąć duplikowania
+        pierwszego obrazu.
+      #}
+      {% set image_list_str = '' %}
+      {% if item['images'] %}
+        {% set image_list_str = item['images'] %}
+      {% elif item['image'] %}
+        {% set image_list_str = item['image'] %}
+      {% endif %}
+      {% if image_list_str %}
+        {% set images_array = image_list_str.split(',') %}
+        <div class="position-relative">
+          <img src="{{ url_for('static', filename=images_array[0]) }}" class="card-img-top slideshow-img" data-images="{{ image_list_str }}" alt="Zdjęcie aktualności">
+          {% if images_array|length > 1 %}
+          <span class="multi-image-indicator">{{ images_array|length }} zdjęć</span>
+          {% endif %}
+        </div>
+      {% endif %}
+      <div class="card-body d-flex flex-column">
+        <h5 class="card-title">{{ item['title'] }}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">{{ item['date_posted'] }}</h6>
+        <p class="card-text">{{ item['content'][:160] }}{% if item['content']|length > 160 %}…{% endif %}</p>
+        <a href="{{ url_for('all_news') }}" class="mt-auto btn btn-outline-primary">Więcej</a>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+  {% if news|length == 0 %}
+    <p>Brak aktualności.</p>
+  {% endif %}
+</div>
+{% endblock %}

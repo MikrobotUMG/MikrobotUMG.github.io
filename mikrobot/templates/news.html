@@ -1,0 +1,69 @@
+{% extends "layout.html" %}
+{% block title %}Aktualności – MIKROBOT{% endblock %}
+{% block content %}
+<div class="row mb-4">
+  <div class="col-12">
+    <h1>Aktualności</h1>
+    <p>Poniżej znajdziesz wszystkie wpisy z naszego koła naukowego.</p>
+  </div>
+</div>
+<div class="row">
+  {% for item in news %}
+  <div class="col-12 mb-4">
+    {#
+      Używamy klasy horizontal-card, aby zdjęcia i treść były obok siebie na
+      większych ekranach. Klasa reverse odwraca kolejność dla naprzemiennych wpisów.
+    #}
+    <div class="card horizontal-card shadow-sm h-100 {% if loop.index0 % 2 == 1 %}reverse{% endif %}">
+      {# Przygotuj listę obrazów: łączymy miniaturę z wszystkimi powiązanymi
+         zdjęciami, usuwając ewentualne duplikaty. Pierwszy element jest
+         wyświetlany, a cała lista przekazywana w data-images. #}
+      {#
+        Przygotuj listę zdjęć dla każdej aktualności bez użycia rozszerzenia
+        `do`. Jinja2 obsługuje konkatenację list przy użyciu operatora +,
+        dlatego zaczynamy od pustej listy, następnie dodajemy miniaturę
+        (item['image']) oraz wszystkie zdjęcia z item['images']. Jeśli nie
+        ma żadnych zdjęć, lista pozostanie pusta.
+      #}
+      {#
+        Przygotuj listę zdjęć jako jeden łańcuch znaków. Najpierw użyj miniatury,
+        jeśli istnieje, a następnie dodaj pozostałe zdjęcia z news_images.
+        Dzięki konkatenacji łańcuchów unikamy ustawiania listy w pętli (problem z
+        zakresem zmiennych w Jinja). Później możemy rozdzielić listę za pomocą
+        funkcji split(',') i policzyć liczbę elementów.
+      #}
+      {#
+        Jeśli w kolumnie images (z news_images) znajduje się lista zdjęć,
+        użyj jej bez dodawania miniatury osobno. images zawiera już wszystkie
+        zdjęcia (w tym potencjalnie miniaturę), a GROUP_CONCAT zapewnia
+        oddzielanie przecinkami. W przeciwnym razie, jeśli images jest puste,
+        użyj samej miniatury.
+      #}
+      {% set image_list_str = '' %}
+      {% if item['images'] %}
+        {% set image_list_str = item['images'] %}
+      {% elif item['image'] %}
+        {% set image_list_str = item['image'] %}
+      {% endif %}
+      {% if image_list_str %}
+        {% set images_array = image_list_str.split(',') %}
+        <div class="image-container position-relative">
+          <img src="{{ url_for('static', filename=images_array[0]) }}" class="slideshow-img" data-images="{{ image_list_str }}" alt="Zdjęcie aktualności">
+          {% if images_array|length > 1 %}
+          <span class="multi-image-indicator">{{ images_array|length }} zdjęć</span>
+          {% endif %}
+        </div>
+      {% endif %}
+      <div class="content-container d-flex flex-column">
+        <h5 class="card-title">{{ item['title'] }}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">{{ item['date_posted'] }}</h6>
+        <p class="card-text">{{ item['content'] }}</p>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+  {% if news|length == 0 %}
+    <p>Brak wpisów.</p>
+  {% endif %}
+</div>
+{% endblock %}

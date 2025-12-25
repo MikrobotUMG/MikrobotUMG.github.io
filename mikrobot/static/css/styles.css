@@ -1,0 +1,37 @@
+/* Niestandardowe style dla strony MIKROBOT */
+
+body {
+  /* Zapobiega przeskakiwaniu strony po wyświetleniu paska przewijania */
+  overflow-x: hidden;
+}
+
+/* Ustawienia dla kart, aby tekst był równomiernie rozłożony */
+.card-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-title {
+  margin-bottom: 0.5rem;
+}
+
+/* Hero tekst */
+.hero-text {
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
+/* Footer */
+footer {
+  position: relative;
+  bottom: 0;
+  width: 100%;
+}
+
+/* Zmniejszenie marginesów formularza kontaktowego na małych ekranach */
+@media (max-width: 576px) {
+  .contact-form {
+    margin-top: 2rem;
+  }
+}

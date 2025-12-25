@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block title %}Projekty – MIKROBOT{% endblock %}
+{% block content %}
+<div class="row mb-4">
+  <div class="col-12">
+    <h1>Nasze projekty</h1>
+    <p>
+      Realizujemy różnorodne projekty badawcze i rozwojowe z zakresu
+      mikrorobotyki, mechaniki i sztucznej inteligencji. Poniżej znajduje się
+      lista wybranych inicjatyw.
+    </p>
+  </div>
+</div>
+<div class="row">
+  {% for project in projects %}
+  <div class="col-md-4 mb-4">
+    <div class="card h-100 shadow-sm">
+      <img src="{{ url_for('static', filename=project['image']) }}" class="card-img-top" alt="{{ project['title'] }}">
+      <div class="card-body d-flex flex-column">
+        <h5 class="card-title">{{ project['title'] }}</h5>
+        <p class="card-text">{{ project['description'] }}</p>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+  {% if projects|length == 0 %}
+    <p>Brak zarejestrowanych projektów.</p>
+  {% endif %}
+</div>
+{% endblock %}

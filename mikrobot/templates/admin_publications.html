@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+
+{% block title %}Zarządzanie publikacjami – MIKROBOT{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+  <div class="col-12">
+    <h1>Zarządzanie publikacjami</h1>
+    <p>Dodaj nowe publikacje wraz ze zdjęciami lub edytuj istniejące wpisy.</p>
+    <!-- Przycisk powrotu do wyboru kategorii -->
+    <a href="{{ url_for('admin_home') }}" class="btn btn-outline-primary mt-2">Powrót do panelu</a>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-8">
+    <!-- Formularz dodawania nowej publikacji -->
+    <form method="post" enctype="multipart/form-data">
+      <div class="mb-3">
+        <label for="title" class="form-label">Tytuł</label>
+        <input type="text" class="form-control" id="title" name="title" required>
+      </div>
+      <div class="mb-3">
+        <label for="description" class="form-label">Opis</label>
+        <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
+      </div>
+      <div class="mb-3">
+        <label for="date" class="form-label">Data</label>
+        <input type="date" class="form-control" id="date" name="date" required>
+      </div>
+      <div class="mb-3">
+        <label for="images" class="form-label">Zdjęcia (można wybrać wiele)</label>
+        <input type="file" class="form-control" id="images" name="images" accept="image/*" multiple>
+      </div>
+      <button type="submit" class="btn btn-primary">Dodaj publikację</button>
+    </form>
+  </div>
+</div>
+<div class="row mt-4">
+  <div class="col-12">
+    <h2>Lista publikacji</h2>
+    {% if publications %}
+      <ul class="list-unstyled">
+        {% for p in publications %}
+        <li class="mb-3">
+          <strong>{{ p['title'] }}</strong> – {{ p['date'] }} (zdjęć: {{ p['images_count'] }})
+          <a href="{{ url_for('edit_publication', publication_id=p['id']) }}" class="btn btn-outline-primary" style="margin-left:0.5rem;">Edytuj</a>
+          <form action="{{ url_for('delete_publication', publication_id=p['id']) }}" method="post" style="display:inline;">
+            <button type="submit" class="btn btn-outline-primary" style="margin-left:0.5rem;">Usuń</button>
+          </form>
+        </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>Brak zarejestrowanych publikacji.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

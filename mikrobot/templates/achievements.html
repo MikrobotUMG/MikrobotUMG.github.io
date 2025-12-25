@@ -1,0 +1,87 @@
+{% extends "layout.html" %}
+{% block title %}Osiągnięcia – MIKROBOT{% endblock %}
+{% block content %}
+<div class="row mb-4">
+  <div class="col-12">
+    <h1>Osiągnięcia</h1>
+    <p>
+      Prezentujemy najważniejsze sukcesy naszego koła. Każde osiągnięcie
+      jest efektem pasji i ciężkiej pracy naszych członków.
+    </p>
+  </div>
+</div>
+<!-- Lista osiągnięć -->
+<div class="row">
+  {% for ach in achievements %}
+  <div class="col-12 mb-4">
+    <div class="card horizontal-card shadow-sm h-100 {% if loop.index0 % 2 == 1 %}reverse{% endif %}">
+      {#
+        Jeśli istnieją zdjęcia, przygotuj pokaz slajdów. Zmienna ach['images']
+        zawiera listę nazw plików oddzielonych przecinkami (np.
+        "uploads/img1.jpg,uploads/img2.jpg"). Pobieramy pierwszy element do
+        początkowego wyświetlenia. Atrybut data-images przechowuje całą listę,
+        którą wykorzysta skrypt JavaScript do zmiany zdjęć co kilka sekund.
+      #}
+      {% if ach['images'] %}
+      {# Przygotuj listę zdjęć #}
+      {% set image_list = ach['images'].split(',') %}
+      {% set first_image = image_list[0] %}
+      <div class="image-container position-relative">
+        <img src="{{ url_for('static', filename=first_image) }}" class="slideshow-img" data-images="{{ ach['images'] }}" alt="Zdjęcie osiągnięcia">
+        {% if image_list|length > 1 %}
+        <span class="multi-image-indicator">{{ image_list|length }} zdjęć</span>
+        {% endif %}
+      </div>
+      {% endif %}
+      <div class="content-container d-flex flex-column">
+        <h5 class="card-title">{{ ach['title'] }}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Data: {{ ach['date'] }}</h6>
+        <p class="card-text">{{ ach['description'] }}</p>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+  {% if achievements|length == 0 %}
+    <p>Brak informacji o osiągnięciach.</p>
+  {% endif %}
+</div>
+
+<!-- Sekcja publikacji -->
+<div class="row mt-5">
+  <div class="col-12">
+    <h2>Publikacje</h2>
+    <p>Nasze koło bierze udział w wielu projektach naukowych, czego efektem są liczne publikacje.
+       Poniżej znajdziesz zestawienie wybranych publikacji wraz z datą.</p>
+  </div>
+</div>
+<div class="row">
+  {% for pub in publications %}
+  <div class="col-12 mb-4">
+    <div class="card horizontal-card shadow-sm h-100 {% if loop.index0 % 2 == 1 %}reverse{% endif %}">
+      {#
+        Analogicznie do osiągnięć – jeśli publikacja ma zdjęcia, przygotuj
+        pokaz slajdów. Lista zdjęć znajduje się w pub['images'].
+      #}
+      {% if pub['images'] %}
+      {% set image_list = pub['images'].split(',') %}
+      {% set first_image = image_list[0] %}
+      <div class="image-container position-relative">
+        <img src="{{ url_for('static', filename=first_image) }}" class="slideshow-img" data-images="{{ pub['images'] }}" alt="Zdjęcie publikacji">
+        {% if image_list|length > 1 %}
+        <span class="multi-image-indicator">{{ image_list|length }} zdjęć</span>
+        {% endif %}
+      </div>
+      {% endif %}
+      <div class="content-container d-flex flex-column">
+        <h5 class="card-title">{{ pub['title'] }}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Data: {{ pub['date'] }}</h6>
+        <p class="card-text">{{ pub['description'] }}</p>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+  {% if publications|length == 0 %}
+    <p>Brak informacji o publikacjach.</p>
+  {% endif %}
+</div>
+{% endblock %}

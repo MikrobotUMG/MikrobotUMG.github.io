@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <!-- Ustawienia meta wymagane do poprawnego działania w urządzeniach mobilnych -->
+    <meta charset="utf-8">
+    <!-- Zgodnie z dokumentacją Bootstrap, dodanie tagu viewport zapewnia
+         właściwe skalowanie i zoom na urządzeniach mobilnych【497221265687908†L53-L54】 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}MIKROBOT – Koło naukowe{% endblock %}</title>
+    <!-- Local stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  </head>
+  <body>
+    <!-- Navigation bar -->
+    <nav class="navbar shadow-sm">
+      <div class="container d-flex align-items-center">
+        <!-- Logo po lewej -->
+        <a class="navbar-brand" href="{{ url_for('index') }}">
+          <img src="{{ url_for('static', filename='images/logo.png') }}" alt="MIKROBOT" class="logo">
+        </a>
+        <!-- Przycisk hamburgera po prawej na urządzeniach mobilnych -->
+        <button class="navbar-toggler" aria-label="Przełącz nawigację">&#9776;</button>
+        <!-- Lista nawigacyjna. Na dużych ekranach pozycje są wyrównane do prawej,
+             na małych – w kolumnie pod nagłówkiem. -->
+        <div id="navbarNav" class="navbar-collapse">
+          <ul class="navbar-nav">
+            <!-- Zamówiona kolejność opcji: Strona główna, Aktualności, Osiągnięcia, O kole, Członkowie, Kontakt, Ważne linki, Statut -->
+            <li class="nav-item"><a class="nav-link {% if request.path=='/' %}active{% endif %}" href="{{ url_for('index') }}">Strona główna</a></li>
+            <li class="nav-item"><a class="nav-link {% if request.path.startswith('/news') %}active{% endif %}" href="{{ url_for('all_news') }}">Aktualności</a></li>
+            <li class="nav-item"><a class="nav-link {% if request.path.startswith('/achievements') %}active{% endif %}" href="{{ url_for('achievements') }}">Osiągnięcia</a></li>
+            <li class="nav-item"><a class="nav-link {% if request.path.startswith('/about') %}active{% endif %}" href="{{ url_for('about') }}">O kole</a></li>
+            <li class="nav-item"><a class="nav-link {% if request.path.startswith('/members') %}active{% endif %}" href="{{ url_for('members') }}">Członkowie</a></li>
+            <li class="nav-item"><a class="nav-link {% if request.path.startswith('/contact') %}active{% endif %}" href="{{ url_for('contact') }}">Kontakt</a></li>
+            <li class="nav-item"><a class="nav-link {% if request.path.startswith('/links') %}active{% endif %}" href="{{ url_for('links') }}">Ważne linki</a></li>
+            <li class="nav-item"><a class="nav-link {% if request.path.startswith('/statute') %}active{% endif %}" href="{{ url_for('statute') }}">Statut</a></li>
+            {% if admin_logged_in %}
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_logout') }}">Wyloguj</a></li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main class="flex-fill">
+      <div class="container mt-4">
+        <!-- Komunikaty flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }}" role="alert">
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+        <!-- Główna zawartość -->
+        {% block content %}{% endblock %}
+      </div>
+    </main>
+
+    <footer>
+      <div class="container">
+        <p class="mb-0">&copy; {{ year }} MIKROBOT – Studenckie Koło Naukowe. Wszelkie prawa zastrzeżone.</p>
+      </div>
+    </footer>
+    <!-- Local JavaScript -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  </body>
+</html>

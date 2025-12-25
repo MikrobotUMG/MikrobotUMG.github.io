@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+{% block title %}Edytuj osiągnięcie – MIKROBOT{% endblock %}
+{% block content %}
+<div class="row mb-4">
+  <div class="col-12">
+    <h1>Edytuj osiągnięcie</h1>
+<p>Zmień tytuł, opis, datę przyznania oraz dodawaj lub usuwaj zdjęcia.</p>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-8">
+    <form method="post" enctype="multipart/form-data">
+      <!-- Formularz edycji osiągnięcia – brak pola hasła, logowanie nastąpiło wcześniej -->
+      <div class="mb-3">
+        <label for="title" class="form-label">Tytuł</label>
+        <input type="text" class="form-control" id="title" name="title" value="{{ achievement['title'] }}" required>
+      </div>
+      <div class="mb-3">
+        <label for="description" class="form-label">Opis</label>
+        <textarea class="form-control" id="description" name="description" rows="4" required>{{ achievement['description'] }}</textarea>
+      </div>
+      <div class="mb-3">
+        <label for="date" class="form-label">Data</label>
+        {#
+          Ustawiamy wartość pola daty, przycinając tekst do formatu RRRR-MM-DD.
+          W bazie przechowujemy daty jako tekst, więc upewnij się, że input
+          otrzymuje prawidłową postać – inaczej przeglądarka może nie ustawić
+          domyślnej wartości.
+        #}
+        <input type="date" class="form-control" id="date" name="date" value="{{ achievement['date'][:10] }}" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Aktualne zdjęcia</label>
+        {% if images %}
+        <ul class="list-unstyled">
+          {% for img in images %}
+          <li class="mb-2">
+            <img src="{{ url_for('static', filename=img['filename']) }}" class="img-fluid mb-1" style="max-width:150px;" alt="Zdjęcie osiągnięcia">
+            <!-- Formularz usuwania poszczególnego zdjęcia -->
+            <!-- Zamiast zagnieżdżania formularzy użyjemy atrybutu formaction na przycisku.
+                 Dzięki temu jeden formularz może obsłużyć zarówno aktualizację wpisu,
+                 jak i usuwanie zdjęć. -->
+            <button type="submit"
+                    class="btn btn-outline-primary"
+                    formaction="{{ url_for('delete_achievement_image', image_id=img['id']) }}"
+                    formmethod="post"
+                    style="margin-left:0.5rem;">
+              Usuń zdjęcie
+            </button>
+          </li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p>Brak zdjęć.</p>
+        {% endif %}
+      </div>
+      <div class="mb-3">
+        <label for="images" class="form-label">Dodaj nowe zdjęcia (opcjonalnie, wiele plików)</label>
+        <input type="file" class="form-control" id="images" name="images" accept="image/*" multiple>
+      </div>
+      <button type="submit" class="btn btn-primary">Zapisz</button>
+      <a href="{{ url_for('admin_achievements') }}" class="btn btn-outline-primary" style="margin-left:0.5rem;">Anuluj</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

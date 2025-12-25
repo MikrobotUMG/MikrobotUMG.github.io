@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block title %}Granty – MIKROBOT{% endblock %}
+{% block content %}
+<div class="row mb-4">
+  <div class="col-12">
+    <h1>Granty i finansowanie</h1>
+    <p>Nasze działania są możliwe dzięki wsparciu grantów i programów
+       finansowania. Poniżej prezentujemy najważniejsze z nich.</p>
+  </div>
+</div>
+<div class="row">
+  {% for grant in grants %}
+  <div class="col-md-4 mb-4">
+    <div class="card h-100 shadow-sm">
+      <div class="card-body d-flex flex-column">
+        <h5 class="card-title">{{ grant['title'] }}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Rok: {{ grant['year'] }}</h6>
+        <p class="card-text">{{ grant['description'] }}</p>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+  {% if grants|length == 0 %}
+    <p>Brak informacji o grantach.</p>
+  {% endif %}
+</div>
+{% endblock %}

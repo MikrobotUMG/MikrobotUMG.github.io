@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+{% block title %}Edytuj aktualność – MIKROBOT{% endblock %}
+{% block content %}
+<div class="row mb-4">
+  <div class="col-12">
+    <h1>Edytuj aktualność</h1>
+    <p>Zmień tytuł, treść lub załaduj nowe zdjęcie. Po zapisaniu powrócisz do listy aktualności.</p>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-8">
+    <form method="post" enctype="multipart/form-data">
+      <!-- Formularz edycji aktualności – bez pola hasła (logowanie nastąpiło wcześniej) -->
+      <div class="mb-3">
+        <label for="title" class="form-label">Tytuł</label>
+        <input type="text" class="form-control" id="title" name="title" value="{{ news_item['title'] }}" required>
+      </div>
+      <div class="mb-3">
+        <label for="content" class="form-label">Treść</label>
+        <textarea class="form-control" id="content" name="content" rows="5" required>{{ news_item['content'] }}</textarea>
+      </div>
+      {% if news_item['image'] %}
+      <div class="mb-3">
+        <p>Miniatura:</p>
+        <img src="{{ url_for('static', filename=news_item['image']) }}" class="img-fluid mb-2" alt="Miniatura aktualności" style="max-height: 200px;">
+      </div>
+      {% endif %}
+      {% if images %}
+      <div class="mb-3">
+        <p>Pozostałe zdjęcia:</p>
+        {% for img in images %}
+        <div class="mb-2 d-flex align-items-center">
+          <img src="{{ url_for('static', filename=img['filename']) }}" alt="Zdjęcie" style="max-height: 150px; margin-right: 0.5rem;">
+          <form action="{{ url_for('delete_news_image', image_id=img['id']) }}" method="post" style="display:inline;">
+            <button type="submit" class="btn btn-outline-primary btn-sm">Usuń</button>
+          </form>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+      <div class="mb-3">
+        <label for="images" class="form-label">Dodaj nowe zdjęcia (opcjonalnie)</label>
+        <input type="file" class="form-control" id="images" name="images" accept="image/*" multiple>
+      </div>
+      <button type="submit" class="btn btn-primary">Zapisz</button>
+      <a href="{{ url_for('admin_news') }}" class="btn btn-outline-primary ms-2">Anuluj</a>
+    </form>
+  </div>
+</div>
+{% endblock %}
